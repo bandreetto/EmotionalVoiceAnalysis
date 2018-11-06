@@ -10,30 +10,38 @@ import matplotlib.pyplot as plt
 feature_labels = [
     'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
 
+feature_labels_FFT = [
+    'domain', 'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
+
 # Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised).
 
+# dimension is 'abs', or 'angle'
 
-def extractFFT(actorFeatures):
 
-    fftAbsoluteFeaturesValues = []
+def extractFFT(actorFeatures, dimension):
+
+    fftFeaturesValues = []
     fftFramesFeatures = []
 
     frequencies = fftfreq(len(actorFeatures[0]), 0.05)
-    fftAbsoluteFeaturesValues.append(frequencies)
+    fftFeaturesValues.append(frequencies)
     for frameFeatures in actorFeatures:
         fftFramesFeatures.append(fft(frameFeatures))
 
     for fftFrameFeaturesValues in fftFramesFeatures:
-        frameAbsoluteFeatureValues = []
+        frameFeatureValues = []
         for fftValue in fftFrameFeaturesValues:
-            frameAbsoluteFeatureValues.append(numpy.abs(fftValue))
-        fftAbsoluteFeaturesValues.append(frameAbsoluteFeatureValues)
+            if dimension == 'angle':
+                frameFeatureValues.append(numpy.angle(fftValue))
+            else:
+                frameFeatureValues.append(numpy.abs(fftValue))
+        fftFeaturesValues.append(frameFeatureValues)
 
-    fftAbsoluteFeaturesValuesNumpyArray = numpy.asarray(
-        numpy.transpose(fftAbsoluteFeaturesValues))
+    fftFeaturesValuesNumpyArray = numpy.asarray(
+        numpy.transpose(fftFeaturesValues))
 
-    return fftAbsoluteFeaturesValuesNumpyArray
-    # numpy.savetxt("FFT_Actor_01_06_st.csv", fftAbsoluteFeaturesValuesNumpyArray, delimiter=",")
+    return fftFeaturesValuesNumpyArray
+    # numpy.savetxt("FFT_Actor_01_06_st.csv", fftFeaturesValuesNumpyArray, delimiter=",")
 
 
 def unwind_features(root, *args):
@@ -55,12 +63,18 @@ def open_actor_features(actor_number):
     return open_phrase_features
 
 
-def open_actor_features_FFT(actor_number):
+# dimension is either 'abs' or 'angle'
+def open_actor_features_FFT(actor_number, dimension):
     def open_phrase_features(phrase_number):
         def open_emotion_features(emotion_number):
-            path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_st.csv'.format(
-                actor_number, phrase_number, emotion_number)
-            return pd.read_csv(path, names=feature_labels)
+            path
+            if dimension == 'angle':
+                path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_ANGLE.csv'.format(
+                    actor_number, phrase_number, emotion_number)
+            else:
+                path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_ABS.csv'.format(
+                    actor_number, phrase_number, emotion_number)
+            return pd.read_csv(path, names=feature_labels_FFT)
         return open_emotion_features
     return open_phrase_features
 
@@ -83,14 +97,21 @@ def extractAndSaveAllDataFFT():
                 transposedArray = numpy.transpose(emotion_features.values)
 
                 # fft e o fft de todas as features de uma emocao de uma frase por ator
-                fft_emotion_features = extractFFT(transposedArray)
+                fft_emotion_features_abs = extractFFT(transposedArray, 'abs')
+                fft_emotion_features_angle = extractFFT(
+                    transposedArray, 'angle')
 
                 if not os.path.exists('FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter)):
                     os.makedirs(
                         'FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter))
 
-                numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}.csv'.format(
-                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features, delimiter=",")
+                numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_ABS.csv'.format(
+                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_abs, delimiter=",")
+                numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_ANGLE.csv'.format(
+                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_angle, delimiter=",")
                 emotionCounter += 1
             phraseCounter += 1
         actorCounter += 1
+
+
+extractAndSaveAllDataFFT()
