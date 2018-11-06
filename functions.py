@@ -112,6 +112,3 @@ def extractAndSaveAllDataFFT():
                 emotionCounter += 1
             phraseCounter += 1
         actorCounter += 1
-
-
-extractAndSaveAllDataFFT()
