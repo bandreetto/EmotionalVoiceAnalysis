@@ -1,0 +1,86 @@
+from numpy import genfromtxt
+from scipy.fftpack import fft
+from scipy.fftpack import fftfreq
+import numpy
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+feature_labels = [
+    'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
+
+# Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised).
+
+
+def extractFFT(actorFeatures):
+
+    fftAbsoluteFeaturesValues = []
+    fftFramesFeatures = []
+
+    frequencies = fftfreq(len(actorFeatures[0]), 0.05)
+    fftAbsoluteFeaturesValues.append(frequencies)
+    for frameFeatures in actorFeatures:
+        fftFramesFeatures.append(fft(frameFeatures))
+
+    for fftFrameFeaturesValues in fftFramesFeatures:
+        frameAbsoluteFeatureValues = []
+        for fftValue in fftFrameFeaturesValues:
+            frameAbsoluteFeatureValues.append(numpy.abs(fftValue))
+        fftAbsoluteFeaturesValues.append(frameAbsoluteFeatureValues)
+
+    fftAbsoluteFeaturesValuesNumpyArray = numpy.asarray(
+        numpy.transpose(fftAbsoluteFeaturesValues))
+
+    return fftAbsoluteFeaturesValuesNumpyArray
+    # numpy.savetxt("FFT_Actor_01_06_st.csv", fftAbsoluteFeaturesValuesNumpyArray, delimiter=",")
+
+
+def unwind_features(root, *args):
+    if len(args) == 0:
+        return root
+    else:
+        head, tail = args[0], args[1:]
+        new_roots = map(root, head)
+        return map(lambda new_root: unwind_features(new_root, *tail), new_roots)
+
+
+def open_actor_features(actor_number):
+    def open_phrase_features(phrase_number):
+        def open_emotion_features(emotion_number):
+            path = './data/Actor_{0:0>2}/Frase_{1}/Actor_{0:0>2}_0{2}_st.csv'.format(
+                actor_number, phrase_number, emotion_number)
+            return pd.read_csv(path, names=feature_labels)
+        return open_emotion_features
+    return open_phrase_features
+
+
+def extractAndSaveAllDataFFT():
+    feature_data_frames = unwind_features(
+        open_actor_features, range(1, 25), range(1, 3), range(1, 9))
+
+    actorCounter = 1
+    for actor_features in feature_data_frames:
+        # actor_features = todas as frases de um ator
+        phraseCounter = 1
+        for frase_features in actor_features:
+            # frase_features = todas as emocoes de uma frase de um ator
+            emotionCounter = 1
+            for emotion_features in frase_features:
+                # emotion_features = todas as features de uma emocao de uma frase de um ator
+
+                # transposedArray tem 34 arrays contendo os valores de cada feature por posicao
+                transposedArray = numpy.transpose(emotion_features.values)
+
+                # fft e o fft de todas as features de uma emocao de uma frase por ator
+                fft_emotion_features = extractFFT(transposedArray)
+
+                if not os.path.exists('FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter)):
+                    os.makedirs(
+                        'FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter))
+
+                numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}.csv'.format(
+                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features, delimiter=",")
+                emotionCounter += 1
+            phraseCounter += 1
+        actorCounter += 1
