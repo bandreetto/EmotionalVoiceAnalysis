@@ -41,7 +41,6 @@ def extractFFT(actorFeatures, dimension):
         numpy.transpose(fftFeaturesValues))
 
     return fftFeaturesValuesNumpyArray
-    # numpy.savetxt("FFT_Actor_01_06_st.csv", fftFeaturesValuesNumpyArray, delimiter=",")
 
 
 def unwind_features(root, *args):
@@ -56,7 +55,7 @@ def unwind_features(root, *args):
 def open_actor_features(actor_number):
     def open_phrase_features(phrase_number):
         def open_emotion_features(emotion_number):
-            path = './data/Actor_{0:0>2}/Frase_{1}/Actor_{0:0>2}_0{2}_st.csv'.format(
+            path = './data/Actor_{0:0>2}/Frase_{1}/Emotion_0{2}_st.csv'.format(
                 actor_number, phrase_number, emotion_number)
             return pd.read_csv(path, names=feature_labels)
         return open_emotion_features
