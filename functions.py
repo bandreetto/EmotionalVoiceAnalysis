@@ -79,6 +79,17 @@ def open_actor_features_FFT(actor_number, dimension):
     return open_phrase_features
 
 
+def getFFTMaximums(fftData, output):
+    transposedData = numpy.transpose(fftData)
+    i = 0
+    maximums = []
+    for label in feature_labels_FFT:
+        if (i != 0):
+            maximums.append(max(transposedData[i]))
+        i += 1
+    numpy.savetxt(output, maximums, delimiter=",")
+
+
 def extractAndSaveAllDataFFT():
     feature_data_frames = unwind_features(
         open_actor_features, range(1, 25), range(1, 3), range(1, 9))
@@ -96,14 +107,16 @@ def extractAndSaveAllDataFFT():
                 # transposedArray tem 34 arrays contendo os valores de cada feature por posicao
                 transposedArray = numpy.transpose(emotion_features.values)
 
-                # fft e o fft de todas as features de uma emocao de uma frase por ator
+                # fft eh o fft de todas as features de uma emocao de uma frase por ator
                 fft_emotion_features_abs = extractFFT(transposedArray, 'abs')
                 fft_emotion_features_angle = extractFFT(
                     transposedArray, 'angle')
-
                 if not os.path.exists('FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter)):
                     os.makedirs(
                         'FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter))
+
+                getFFTMaximums(fft_emotion_features_abs, 'FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_MAXIMUMS.csv'.format(
+                    actorCounter, phraseCounter, emotionCounter))
 
                 numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_ABS.csv'.format(
                     actorCounter, phraseCounter, emotionCounter), fft_emotion_features_abs, delimiter=",")
@@ -112,3 +125,5 @@ def extractAndSaveAllDataFFT():
                 emotionCounter += 1
             phraseCounter += 1
         actorCounter += 1
+
+extractAndSaveAllDataFFT()
