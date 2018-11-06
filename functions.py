@@ -55,6 +55,16 @@ def open_actor_features(actor_number):
     return open_phrase_features
 
 
+def open_actor_features_FFT(actor_number):
+    def open_phrase_features(phrase_number):
+        def open_emotion_features(emotion_number):
+            path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_st.csv'.format(
+                actor_number, phrase_number, emotion_number)
+            return pd.read_csv(path, names=feature_labels)
+        return open_emotion_features
+    return open_phrase_features
+
+
 def extractAndSaveAllDataFFT():
     feature_data_frames = unwind_features(
         open_actor_features, range(1, 25), range(1, 3), range(1, 9))
