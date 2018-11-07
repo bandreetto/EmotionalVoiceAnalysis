@@ -66,7 +66,6 @@ def open_actor_features(actor_number):
 def open_actor_features_FFT(actor_number, dimension):
     def open_phrase_features(phrase_number):
         def open_emotion_features(emotion_number):
-            path
             if dimension == 'angle':
                 path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_ANGLE.csv'.format(
                     actor_number, phrase_number, emotion_number)
@@ -125,4 +124,12 @@ def extractAndSaveAllDataFFT():
             phraseCounter += 1
         actorCounter += 1
 
-extractAndSaveAllDataFFT()
+
+def get_covered_data_percentile(data_array, deviation):
+    if deviation < 0:
+        raise ValueError('deviation must be a positive value')
+    median_value = numpy.median(data_array)
+    values_in_range = filter(lambda data: data < median_value +
+                             deviation or data > median_value - deviation, data_array)
+
+    return len(values_in_range)/len(data_array)
