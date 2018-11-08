@@ -12,3 +12,11 @@ class curry:
             kw = kwargs or self.kwargs
 
         return self.fun(*(self.pending + args), **kw)
+
+
+def createFolder(directory):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print ('Error: Creating directory. ' + directory)
