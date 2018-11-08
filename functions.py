@@ -63,9 +63,10 @@ def open_actor_features(actor_number):
 
 
 # dimension is either 'abs' or 'angle'
-def open_actor_features_FFT(actor_number, dimension):
+def open_actor_features_FFT(actor_number, **kwargs):
     def open_phrase_features(phrase_number):
         def open_emotion_features(emotion_number):
+            dimension = kwargs.get('dimension')
             if dimension == 'angle':
                 path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_0{2}_ANGLE.csv'.format(
                     actor_number, phrase_number, emotion_number)
