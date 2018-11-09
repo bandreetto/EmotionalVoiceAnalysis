@@ -10,7 +10,10 @@ from utils import *
 # plt.plot(range(0, len(open_actor_features(5)(1)(1)[
 #          'Energy'])), open_actor_features(5)(1)(1)['Energy'])
 
-showGraphs('frequency')
+showGraphs('frequency',
+           feature_labels=['Energy'],
+           actor_numbers=[1, 3]
+           )
 
 # feature_data_frames = unwind_features(
 #     curry(open_actor_features_FFT, dimension='angle'), range(1, 25), range(1, 3), range(1, 9))
