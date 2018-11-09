@@ -213,7 +213,7 @@ def showGraphs(domain, **kwargs):
     )
 
     domain = domain if domain == 'time' else 'FTT({})'.format(
-        dimension if dimension == 'abs' else 'angle')
+        dimension if dimension == 'angle' else 'abs')
     print 'Generating {} graphs for\n      features: {}\n      emotions: {}\n      phrases: {}\n      actors: {}\n'.format(
         domain, features_range, emotions_range, phrases_range, actors_range)
     colors = ['r', 'g', 'b', 'y']

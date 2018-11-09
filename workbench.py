@@ -17,7 +17,10 @@ from utils import *
 #            emotion_numbers=[1, 3]
 #            )
 
-get_covered_data_percentile(open_actor_features_maximums(1)(1)(1)['Energy'], 1)
+print open_actor_features_maximums(1)(1)(1)['Energy']
+
+print get_covered_data_percentile(
+    open_actor_features_maximums(1)(1)(1)['Energy'], 0)
 
 # feature_data_frames = unwind_features(
 #     curry(open_actor_features_FFT, dimension='angle'), range(1, 25), range(1, 3), range(1, 9))
