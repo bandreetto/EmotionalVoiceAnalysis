@@ -183,7 +183,6 @@ def showGraphs(domain, **kwargs):
     colors = ['r', 'g', 'b', 'y']
     i = 0
     for actor_features in features_data_frames:
-        print '{} graphs loaded'.format(i)
         for phrase_features in actor_features:
             for emotion_features in phrase_features:
                 for feature in features_range:
@@ -191,5 +190,6 @@ def showGraphs(domain, **kwargs):
                     i += 1
                     plt.plot(
                         range(0, len(emotion_features[feature])), emotion_features[feature], color)
+        print '{} graphs loaded'.format(i)
 
     plt.show()
