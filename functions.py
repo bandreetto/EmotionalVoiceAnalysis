@@ -125,17 +125,20 @@ def extractAndSaveAllDataFFT():
                 fft_emotion_features_abs = extractFFT(transposedArray, 'abs')
                 fft_emotion_features_angle = extractFFT(
                     transposedArray, 'angle')
+
+                fft_emotion_features_abs_half = fft_emotion_features_abs[:len(fft_emotion_features_abs)/2]
+                fft_emotion_features_angle_half = fft_emotion_features_angle[:len(fft_emotion_features_angle)/2]
                 if not os.path.exists('FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter)):
                     os.makedirs(
                         'FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter))
 
-                getFFTMaximums(fft_emotion_features_abs, 'FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_MAXIMUMS.csv'.format(
+                getFFTMaximums(fft_emotion_features_abs_half, 'FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_MAXIMUMS.csv'.format(
                     actorCounter, phraseCounter, emotionCounter))
 
                 numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_ABS.csv'.format(
-                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_abs, delimiter=",")
+                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_abs_half, delimiter=",")
                 numpy.savetxt('FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_ANGLE.csv'.format(
-                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_angle, delimiter=",")
+                    actorCounter, phraseCounter, emotionCounter), fft_emotion_features_angle_half, delimiter=",")
                 emotionCounter += 1
             phraseCounter += 1
         actorCounter += 1
