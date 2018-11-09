@@ -155,15 +155,18 @@ def showGraphs(domain, **kwargs):
         phrases_range,
         emotions_range
     )
-    print 'Generating {} graphs for\n      features: {}\n  emotions: {}\n  phrases: {}\n   actors: {}\n'.format(
-        domain if domain == 'time' else dimension, features_range, emotions_range, phrases_range, actors_range)
+
+    domain = domain if domain == 'time' else 'FTT({})'.format(
+        dimension if dimension == 'abs' else 'angle')
+    print 'Generating {} graphs for\n      features: {}\n      emotions: {}\n      phrases: {}\n      actors: {}\n'.format(
+        domain, features_range, emotions_range, phrases_range, actors_range)
     colors = ['r', 'g', 'b', 'y']
     i = 0
     for actor_features in features_data_frames:
+        print '{} graphs loaded'.format(i)
         for phrase_features in actor_features:
             for emotion_features in phrase_features:
                 for feature in features_range:
-                    print '{} graphs loaded'.format(i)
                     color = colors[i % 4]
                     i += 1
                     plt.plot(

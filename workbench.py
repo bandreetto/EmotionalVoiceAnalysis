@@ -12,7 +12,9 @@ from utils import *
 
 showGraphs('frequency',
            feature_labels=['Energy'],
-           actor_numbers=[1, 3]
+           actor_numbers=[1, 3],
+           phrase_numbers=[1],
+           emotion_numbers=[1, 3]
            )
 
 # feature_data_frames = unwind_features(
