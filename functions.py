@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from utils import *
-
+import heapq
 
 feature_labels = [
     'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
@@ -81,13 +81,18 @@ def open_actor_features_FFT(actor_number, **kwargs):
 
 def getFFTMaximums(fftData, output):
     transposedData = numpy.transpose(fftData)
+    frequencies = fftfreq(len(transposedData[0]), 0.05)
     i = 0
-    maximums = []
+    maximumsFrequencies = []
     for label in feature_labels_FFT:
         if (i != 0):
-            maximums.append(max(transposedData[i]))
+            elementIndex = numpy.argmax(transposedData[i])
+            if (elementIndex == 0):
+                secondMaximum = heapq.nlargest(2, transposedData[i])[1]
+                elementIndex = transposedData[i].tolist().index(secondMaximum)
+            maximumsFrequencies.append(transposedData[0][elementIndex])
         i += 1
-    numpy.savetxt(output, maximums, delimiter=",")
+    numpy.savetxt(output, maximumsFrequencies, delimiter=",")
 
 
 def extractAndSaveAllDataFFT():
@@ -127,6 +132,9 @@ def extractAndSaveAllDataFFT():
         actorCounter += 1
 
 
+extractAndSaveAllDataFFT()
+
+
 def get_covered_data_percentile(data_array, deviation):
     if deviation < 0:
         raise ValueError('deviation must be a positive value')
@@ -134,7 +142,7 @@ def get_covered_data_percentile(data_array, deviation):
     values_in_range = filter(lambda data: data < median_value +
                              deviation or data > median_value - deviation, data_array)
 
-    return len(values_in_range)/len(data_array)
+    return len(values_in_range) / len(data_array)
 
 # domain is either 'time' or 'frequency'
 # dimension is either 'abs' or 'angle'
