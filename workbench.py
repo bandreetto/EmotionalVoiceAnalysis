@@ -10,12 +10,14 @@ from utils import *
 # plt.plot(range(0, len(open_actor_features(5)(1)(1)[
 #          'Energy'])), open_actor_features(5)(1)(1)['Energy'])
 
-showGraphs('frequency',
-           feature_labels=['Energy'],
-           actor_numbers=[1, 3],
-           phrase_numbers=[1],
-           emotion_numbers=[1, 3]
-           )
+# showGraphs('frequency',
+#            feature_labels=['Energy'],
+#            actor_numbers=[1, 3],
+#            phrase_numbers=[1],
+#            emotion_numbers=[1, 3]
+#            )
+
+get_covered_data_percentile(open_actor_features_maximums(1)(1)(1)['Energy'], 1)
 
 # feature_data_frames = unwind_features(
 #     curry(open_actor_features_FFT, dimension='angle'), range(1, 25), range(1, 3), range(1, 9))

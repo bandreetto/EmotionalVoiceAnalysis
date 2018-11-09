@@ -80,6 +80,16 @@ def open_actor_features_FFT(actor_number, **kwargs):
     return open_phrase_features
 
 
+def open_actor_features_maximums(actor_number):
+    def open_phrase_features(phrase_number):
+        def open_emotion_features(emotion_number):
+            path = './FFT/Actor_{0:0>2}/Frase_{1}/FFT_{2:0>2}_MAXIMUMS.csv'.format(
+                actor_number, phrase_number, emotion_number)
+            return pd.read_csv(path, names=feature_labels)
+        return open_emotion_features
+    return open_phrase_features
+
+
 def getFFTMaximums(fftData, output):
     transposedData = numpy.transpose(fftData)
     frequencies = fftfreq(len(transposedData[0]), 0.05)
