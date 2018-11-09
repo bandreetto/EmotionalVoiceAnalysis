@@ -107,8 +107,10 @@ def getFFTMaximums(fftData, output):
             maxLocalMaximumIndexAtMaxArray = numpy.argmax(
                 localMaximunsValues)
             localMaximunsIndexes = localMaximunsIndexes[0]
-            maxLocalMaximumIndexAtFeatureColumn = localMaximunsIndexes[maxLocalMaximumIndexAtMaxArray]
-            maximumsFrequencies.append(transposedData[0][maxLocalMaximumIndexAtFeatureColumn])
+            maxLocalMaximumIndexAtFeatureColumn = localMaximunsIndexes[
+                maxLocalMaximumIndexAtMaxArray]
+            maximumsFrequencies.append(
+                transposedData[0][maxLocalMaximumIndexAtFeatureColumn])
         i += 1
     maxFrequenciesColumnsArray = [maximumsFrequencies]
     numpy.savetxt(output, maxFrequenciesColumnsArray, delimiter=",")
@@ -136,8 +138,10 @@ def extractAndSaveAllDataFFT():
                 fft_emotion_features_angle = extractFFT(
                     transposedArray, 'angle')
 
-                fft_emotion_features_abs_half = fft_emotion_features_abs[:len(fft_emotion_features_abs)/2]
-                fft_emotion_features_angle_half = fft_emotion_features_angle[:len(fft_emotion_features_angle)/2]
+                fft_emotion_features_abs_half = fft_emotion_features_abs[:len(
+                    fft_emotion_features_abs)/2 - 1]
+                fft_emotion_features_angle_half = fft_emotion_features_angle[:len(
+                    fft_emotion_features_angle)/2 - 1]
                 if not os.path.exists('FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter)):
                     os.makedirs(
                         'FFT/Actor_{0:0>2}/Frase_{1}'.format(actorCounter, phraseCounter))
@@ -161,8 +165,8 @@ def get_covered_data_percentile(data_array, deviation):
     if deviation < 0:
         raise ValueError('deviation must be a positive value')
     median_value = numpy.median(data_array)
-    values_in_range = filter(lambda data: data < median_value +
-                             deviation or data > median_value - deviation, data_array)
+    values_in_range = filter(lambda data: data <= median_value +
+                             deviation or data >= median_value - deviation, data_array)
 
     return len(values_in_range) / len(data_array)
 
