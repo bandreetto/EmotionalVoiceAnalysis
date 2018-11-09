@@ -1,6 +1,7 @@
 from numpy import genfromtxt
 from scipy.fftpack import fft
 from scipy.fftpack import fftfreq
+from scipy.signal import argrelextrema
 import numpy
 import os
 import pandas as pd
@@ -86,13 +87,21 @@ def getFFTMaximums(fftData, output):
     maximumsFrequencies = []
     for label in feature_labels_FFT:
         if (i != 0):
-            elementIndex = numpy.argmax(transposedData[i])
-            if (elementIndex == 0):
-                secondMaximum = heapq.nlargest(2, transposedData[i])[1]
-                elementIndex = transposedData[i].tolist().index(secondMaximum)
-            maximumsFrequencies.append(transposedData[0][elementIndex])
+            localMaximunsIndexes = argrelextrema(
+                transposedData[i], numpy.greater)
+            localMaximunsValues = []
+            for index in localMaximunsIndexes:
+                localMaximunsValues.append(transposedData[i][index])
+
+            localMaximunsValues = localMaximunsValues[0]
+            maxLocalMaximumIndexAtMaxArray = numpy.argmax(
+                localMaximunsValues)
+            localMaximunsIndexes = localMaximunsIndexes[0]
+            maxLocalMaximumIndexAtFeatureColumn = localMaximunsIndexes[maxLocalMaximumIndexAtMaxArray]
+            maximumsFrequencies.append(transposedData[0][maxLocalMaximumIndexAtFeatureColumn])
         i += 1
-    numpy.savetxt(output, maximumsFrequencies, delimiter=",")
+    maxFrequenciesColumnsArray = [maximumsFrequencies]
+    numpy.savetxt(output, maxFrequenciesColumnsArray, delimiter=",")
 
 
 def extractAndSaveAllDataFFT():
