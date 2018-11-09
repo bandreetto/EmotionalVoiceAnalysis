@@ -5,6 +5,7 @@ import numpy
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils import *
 
 
 feature_labels = [
@@ -134,3 +135,35 @@ def get_covered_data_percentile(data_array, deviation):
                              deviation or data > median_value - deviation, data_array)
 
     return len(values_in_range)/len(data_array)
+
+# domain is either 'time' or 'frequency'
+# dimension is either 'abs' or 'angle'
+
+
+def showGraphs(domain, **kwargs):
+    actors_range = kwargs.get('actor_numbers') or range(1, 25)
+    phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
+    emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
+    features_range = kwargs.get('feature_labels') or (
+        feature_labels if domain == 'time' else feature_labels_FFT)
+
+    dimension = kwargs.get('dimension')
+    features_data_frames = unwind_features(
+        open_actor_features if domain == 'time' else curry(open_actor_features_FFT,
+                                                           dimension=dimension),
+        actors_range,
+        phrases_range,
+        emotions_range
+    )
+    colors = ['r', 'g', 'b', 'y']
+    i = 0
+    for actor_features in features_data_frames:
+        for phrase_features in actor_features:
+            for emotion_features in phrase_features:
+                for feature in features_range:
+                    color = colors[i % 4]
+                    i += 1
+                    plt.plot(
+                        range(0, len(emotion_features[feature])), emotion_features[feature], color)
+
+    plt.show()
