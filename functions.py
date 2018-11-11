@@ -2,6 +2,7 @@ from numpy import genfromtxt
 from scipy.fftpack import fft
 from scipy.fftpack import fftfreq
 from scipy.signal import argrelextrema
+from sklearn.naive_bayes import GaussianNB
 import numpy
 import os
 import pandas as pd
@@ -43,6 +44,23 @@ def extractFFT(actorFeatures, dimension):
         numpy.transpose(fftFeaturesValues))
 
     return fftFeaturesValuesNumpyArray
+
+
+def naive_bayes_init():
+	# Cria o classifier
+	clf = GaussianNB()
+	return clf
+
+
+def naive_bayes_train(clf , feature_data_array, feature_labels_array):
+	# Treina o classifier
+	clf.fit(feature_data_array, feature_labels_array)
+
+def naive_bayes_predictions(clf, featute_data_test_array):
+	# Testa o classifier
+	predicted = clf.predict(featute_data_test_array)
+
+
 
 
 def unwind_features(root, *args):
@@ -88,6 +106,10 @@ def open_actor_features_maximums(actor_number):
             return pd.read_csv(path, names=feature_labels)
         return open_emotion_features
     return open_phrase_features
+
+# Naive Bayes
+
+def 
 
 
 def getFFTMaximums(fftData, output):
