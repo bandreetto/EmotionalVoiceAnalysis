@@ -109,8 +109,6 @@ def open_actor_features_maximums(actor_number):
 
 # Naive Bayes
 
-def 
-
 
 def getFFTMaximums(fftData, output):
     transposedData = numpy.transpose(fftData)
