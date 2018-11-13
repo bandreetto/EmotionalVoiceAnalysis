@@ -6,8 +6,16 @@ import matplotlib.pyplot as plt
 from functions import *
 from utils import *
 
+emotions, data = get_categories(0.2)
+print emotions, data
 
-createEmotionMaximumsFiles()
+
+classifier = naive_bayes_init()
+
+naive_bayes_train(classifier, data, emotions)
+
+
+
 
 # showGraphs('frequency',
 #            #    feature_labels=['Energy'],

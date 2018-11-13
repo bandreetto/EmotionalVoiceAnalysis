@@ -10,6 +10,17 @@ import matplotlib.pyplot as plt
 from utils import *
 import heapq
 
+emotions_dict = {
+    1: "Neutral",
+    2: "Calm" ,
+    3: "Happy" ,
+    4: "Sad" ,
+    5: "Angry" ,
+    6: "Fearful" ,
+    7: "Disgust" ,
+    8: "Surprised" ,
+}
+
 feature_labels = [
     'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
 
@@ -105,7 +116,26 @@ def open_actor_features_maximums(actor_number):
         return open_emotion_features
     return open_phrase_features
 
-# Naive Bayes
+
+def create_category(deviation, maximus):
+    return int(maximus/deviation*2)
+
+def get_categories(deviation):
+    dataframes = []
+    emotions = []
+    emotion = 1
+    data = []
+    for i in range(1,9):
+        dataframes.append(pd.read_csv("Maximums/Emotion_{:0>2}.csv".format(i), names=feature_labels))
+    for dataframe in dataframes:
+        for data_row in dataframe.values:
+            data.append(map(curry(create_category, deviation),data_row))
+            emotions.append(emotions_dict[emotion])
+        emotion += 1   
+
+    return emotions, data 
+
+
 
 
 def getFFTMaximums(fftData, output):

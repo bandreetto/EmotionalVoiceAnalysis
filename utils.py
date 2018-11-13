@@ -1,3 +1,5 @@
+import os
+
 class curry:
     def __init__(self, fun, *args, **kwargs):
         self.fun = fun
