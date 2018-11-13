@@ -47,20 +47,18 @@ def extractFFT(actorFeatures, dimension):
 
 
 def naive_bayes_init():
-        # Cria o classifier
-    clf = GaussianNB()
-	return clf
+    # Cria o classifier
+    return GaussianNB()
 
 
-def naive_bayes_train(clf , feature_data_array, feature_labels_array):
-	# Treina o classifier
-	clf.fit(feature_data_array, feature_labels_array)
+def naive_bayes_train(clf, feature_data_array, feature_labels_array):
+        # Treina o classifier
+    clf.fit(feature_data_array, feature_labels_array)
+
 
 def naive_bayes_predictions(clf, featute_data_test_array):
-	# Testa o classifier
-	predicted = clf.predict(featute_data_test_array)
-
-
+    # Testa o classifier
+    predicted = clf.predict(featute_data_test_array)
 
 
 def unwind_features(root, *args):
