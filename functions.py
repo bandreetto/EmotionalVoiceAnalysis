@@ -47,8 +47,8 @@ def extractFFT(actorFeatures, dimension):
 
 
 def naive_bayes_init():
-	# Cria o classifier
-	clf = GaussianNB()
+        # Cria o classifier
+    clf = GaussianNB()
 	return clf
 
 
@@ -194,6 +194,26 @@ def get_covered_data_percentile(data_array, deviation):
 # dimension is either 'abs' or 'angle'
 
 
+def getFeaturesDataFrames(domain, **kwargs):
+    actors_range = kwargs.get('actor_numbers') or range(1, 25)
+    phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
+    emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
+    dimension = kwargs.get('dimension')
+
+    openers = {
+        'time': open_actor_features,
+        'frequency': curry(open_actor_features_FFT,  dimension=dimension),
+        'maximums': open_actor_features_maximums
+    }
+
+    return unwind_features(
+        openers[domain],
+        actors_range,
+        phrases_range,
+        emotions_range
+    )
+
+
 def showGraphs(domain, **kwargs):
     actors_range = kwargs.get('actor_numbers') or range(1, 25)
     phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
@@ -202,16 +222,11 @@ def showGraphs(domain, **kwargs):
         feature_labels if domain == 'time' else feature_labels_FFT)
 
     dimension = kwargs.get('dimension')
-    features_data_frames = unwind_features(
-        open_actor_features if domain == 'time' else curry(open_actor_features_FFT,
-                                                           dimension=dimension),
-        actors_range,
-        phrases_range,
-        emotions_range
-    )
-
-    domain = domain if domain == 'time' else 'FTT({})'.format(
+    formatted_domain = domain if domain == 'time' else 'FTT({})'.format(
         dimension if dimension == 'angle' else 'abs')
+
+    features_data_frames = getFeaturesDataFrames(domain, **kwargs)
+
     print 'Generating {} graphs for\n      features: {}\n      emotions: {}\n      phrases: {}\n      actors: {}\n'.format(
         formatted_domain, features_range, emotions_range, phrases_range, actors_range)
     colors = ['r', 'g', 'b', 'y']
@@ -225,5 +240,6 @@ def showGraphs(domain, **kwargs):
                     plt.plot(
                         range(0, len(emotion_features[feature])), emotion_features[feature], color)
         print '{} graphs loaded - {}%'.format(i, 100*i/(len(features_data_frames)*len(
+            actor_features)*len(actor_features[0])*len(feature_labels)))
 
     plt.show()
