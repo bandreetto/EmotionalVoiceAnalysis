@@ -241,3 +241,28 @@ def showGraphs(domain, **kwargs):
             actor_features)*len(actor_features[0])*len(feature_labels)))
 
     plt.show()
+
+
+def createEmotionMaximumsFiles():
+    featureMaximums = getFeaturesDataFrames('maximums')
+
+    emotion_maximums_array = map(lambda n: [], range(1, 9))
+
+    for actor in featureMaximums:
+        for phrase in actor:
+            emotion_number = 1
+            for emotion in phrase:
+                maximums_array = []
+                i = 0
+                for label in feature_labels:
+                    maximums_array.append(emotion[label][0])
+                    i += 1
+                emotion_maximums_array[emotion_number -
+                                       1].append(maximums_array)
+                emotion_number += 1
+
+    for i in range(1, 9):
+        df = pd.DataFrame(data=numpy.matrix(
+            emotion_maximums_array[i-1]).astype(float))
+        df.to_csv('Maximums/Emotion_{:0>2}.csv'.format(i),
+                  header=False, index=False)
