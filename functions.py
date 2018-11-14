@@ -109,7 +109,6 @@ def sorteia_numeros(porcentagem, quantidade_total):
     n = 0
     num_sorteados = []
     num = int(quantidade_total*porcentagem)
-    print num
     while (n < num):
         sorteado = random.randint(0, quantidade_total - 1)
         if sorteado not in num_sorteados:
@@ -130,7 +129,6 @@ def naive_bayes_train(clf, feature_data_array, feature_labels_array):
         # Treina o classifier
     X = numpy.array(feature_data_array)
     Y = numpy.array(feature_labels_array)
-    X.reshape(1, -1)
     clf.fit(X, Y)
 
 
