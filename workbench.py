@@ -9,7 +9,7 @@ from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from utils import *
 num = 0
-iteration = 4000000
+iteration = 100
 
 
 # X = numpy.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
