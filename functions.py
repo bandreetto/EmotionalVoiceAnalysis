@@ -65,10 +65,10 @@ def numeros_menores(array, num):
             cont +=1
     return cont
 
-def split_features_labels(data_set):
-    features = data_set.data
-    labels = data_set.target
-    return features, labels    
+# def split_features_labels(data_set):
+#     features = data_set.data
+#     labels = data_set.target
+#     return features, labels    
 
 def split_train_test(features, labels, test_size):
     total_test_size = int(len(features) * test_size)
