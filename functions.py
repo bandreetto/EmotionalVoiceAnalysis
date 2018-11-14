@@ -4,7 +4,9 @@ from scipy.fftpack import fftfreq
 from scipy.signal import argrelextrema
 from sklearn.naive_bayes import GaussianNB
 import numpy
+import copy
 import os
+import random
 import pandas as pd
 import matplotlib.pyplot as plt
 from utils import *
@@ -56,6 +58,68 @@ def extractFFT(actorFeatures, dimension):
 
     return fftFeaturesValuesNumpyArray
 
+def numeros_menores(array, num):
+    cont = 0
+    for numero in array:
+        if numero < num:
+            cont +=1
+    return cont
+
+def split_features_labels(data_set):
+    features = data_set.data
+    labels = data_set.target
+    return features, labels    
+
+def split_train_test(features, labels, test_size):
+    total_test_size = int(len(features) * test_size)
+    print total_test_size
+    numpy.random.seed(2)
+    indices = numpy.random.permutation(len(features))
+    train_features = features[indices[:-total_test_size]]
+    train_labels = labels[indices[:-total_test_size]]
+    test_features  = features[indices[-total_test_size:]]
+    test_labels  = labels[indices[-total_test_size:]]
+    return train_features, train_labels, test_features, test_labels
+
+
+
+def split_array(labels_array, data_array):
+    labels_test = []
+    data_test = []
+    data_backup = copy.deepcopy(data_array)
+    labels_backup = copy.deepcopy(labels_array)
+    numeros = []
+    cont = 0
+    num_sorteados = []
+    num_sorteados = sorteia_numeros(.2, 384)
+    for num in num_sorteados:
+        cont = numeros_menores(numeros, num)
+        numeros.append(num)
+        # print "Numero sorteado: "+str(num)
+        labels_test.append(labels_backup[num])
+        data_test.append(data_backup[num])
+        del data_array[num-cont]
+        del labels_array[num-cont]
+        # print "Tamanho Backup: " + str(len(labels_backup))
+        # print "Tamanho Original: " + str(len(labels_array))
+    return labels_test, data_test  
+    
+
+def sorteia_numeros(porcentagem, quantidade_total):
+    n = 0
+    num_sorteados = []
+    num = int(quantidade_total*porcentagem)
+    print num
+    while (n < num):
+        sorteado = random.randint(0, quantidade_total - 1)
+        if sorteado not in num_sorteados:
+            num_sorteados.append(sorteado)
+            n += 1
+    return num_sorteados     
+
+
+
+
 
 def naive_bayes_init():
     # Cria o classifier
@@ -64,12 +128,17 @@ def naive_bayes_init():
 
 def naive_bayes_train(clf, feature_data_array, feature_labels_array):
         # Treina o classifier
-    clf.fit(feature_data_array, feature_labels_array)
+    X = numpy.array(feature_data_array)
+    Y = numpy.array(feature_labels_array)
+    X.reshape(1, -1)
+    clf.fit(X, Y)
 
 
-def naive_bayes_predictions(clf, featute_data_test_array):
+def naive_bayes_predictions(clf, feature_data_test_array):
     # Testa o classifier
-    predicted = clf.predict(featute_data_test_array)
+    test = []
+    test.append(feature_data_test_array)
+    predicted = clf.predict(test)
 
 
 def unwind_features(root, *args):
