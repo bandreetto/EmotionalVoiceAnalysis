@@ -23,6 +23,17 @@ emotions_dict = {
     8: "Surprised" ,
 }
 
+emotions_dictinary = {
+    "Neutral":  0,
+    "Calm": 1 ,
+    "Happy": 2,
+    "Sad": 3,
+    "Angry": 4,
+    "Fearful": 5,
+    "Disgust": 6,
+    "Surprised": 7,
+}
+
 feature_labels = [
     'Zero Crossing Rate', 'Energy', 'Entropy of Energy', 'Spectral Centroid', 'Spectral Spread', 'Spectral Entropy', 'Spectral Flux', 'Spectral Rolloff', 'MFCC1', 'MFCC2', 'MFCC3', 'MFCC4', 'MFCC5', 'MFCC6', 'MFCC7', 'MFCC8', 'MFCC9', 'MFCC10', 'MFCC11', 'MFCC12', 'MFCC13', 'Chroma Vector 1', 'Chroma Vector 2', 'Chroma Vector 3', 'Chroma Vector 4', 'Chroma Vector 5', 'Chroma Vector 6', 'Chroma Vector 7', 'Chroma Vector 8', 'Chroma Vector 9', 'Chroma Vector 10', 'Chroma Vector 11', 'Chroma Vector 12', 'Chroma Deviation']
 
@@ -82,6 +93,40 @@ def split_train_test(features, labels, test_size):
     return train_features, train_labels, test_features, test_labels
 
 
+# 5 partes
+def split_list(input_array, wanted_parts=1):
+    backup_array = numpy.array(input_array)
+    splitted_array = numpy.array_split(backup_array, wanted_parts)
+    return splitted_array
+
+def generate_shuffle_positions(positions):
+    a = list(range(positions))
+    a = numpy.array(a)
+    numpy.random.shuffle(a)
+    return a
+
+def shuffle_array(array, shuffle_positions):
+    backup_array = numpy.array(array)
+    shuffled_array = []
+    for i in range (0, len(shuffle_positions)):
+        shuffled_array.append(backup_array[shuffle_positions[i]])
+    return shuffled_array  
+
+
+def statistic_matrix_init():
+    return [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
+
+def statistic_data(emotion, predict, stat_matrix):
+    stat_matrix[emotions_dictinary[emotion]][emotions_dictinary[predict[0]]] += 1
+
+
+def get_train_test_array(splitted_array, iteration):
+    array = copy.deepcopy(splitted_array)
+    test_array = array[iteration]
+    del array[iteration]
+    train_array = numpy.concatenate(array)
+    return numpy.array(train_array), numpy.array(test_array)
+
 
 def split_array(labels_array, data_array):
     labels_test = []
@@ -91,7 +136,10 @@ def split_array(labels_array, data_array):
     numeros = []
     cont = 0
     num_sorteados = []
-    num_sorteados = sorteia_numeros(.2, 384)
+    # 4 emocoes 192
+    # 2 emocoes 96
+    # todas emocoes 384
+    num_sorteados = sorteia_numeros(.2, 192)
     for num in num_sorteados:
         cont = numeros_menores(numeros, num)
         numeros.append(num)
@@ -192,14 +240,16 @@ def get_categories(deviation):
     emotions = []
     emotion = 1
     data = []
+    
     for i in range(1,9):
         dataframes.append(pd.read_csv("Maximums/Emotion_{:0>2}.csv".format(i), names=feature_labels))
     for dataframe in dataframes:
         for data_row in dataframe.values:
-            data.append(map(curry(create_category, deviation),data_row))
-            emotions.append(emotions_dict[emotion])
-        emotion += 1   
-
+            # if(emotions_dict[emotion] == "Happy" or emotions_dict[emotion] == "Angry"):
+                # if(emotions_dict[emotion] == "Happy" or emotions_dict[emotion] == "Sad" or emotions_dict[emotion] == "Angry" or emotions_dict[emotion] == "Fearful"):
+                    data.append(map(curry(create_category, deviation),data_row))
+                    emotions.append(emotions_dict[emotion])   
+        emotion += 1
     return emotions, data 
 
 
