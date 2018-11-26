@@ -14,18 +14,18 @@ import heapq
 
 emotions_dict = {
     1: "Neutral",
-    2: "Calm" ,
-    3: "Happy" ,
-    4: "Sad" ,
-    5: "Angry" ,
-    6: "Fearful" ,
-    7: "Disgust" ,
-    8: "Surprised" ,
+    2: "Calm",
+    3: "Happy",
+    4: "Sad",
+    5: "Angry",
+    6: "Fearful",
+    7: "Disgust",
+    8: "Surprised",
 }
 
 emotions_dictinary = {
     "Neutral":  0,
-    "Calm": 1 ,
+    "Calm": 1,
     "Happy": 2,
     "Sad": 3,
     "Angry": 4,
@@ -69,17 +69,19 @@ def extractFFT(actorFeatures, dimension):
 
     return fftFeaturesValuesNumpyArray
 
+
 def numeros_menores(array, num):
     cont = 0
     for numero in array:
         if numero < num:
-            cont +=1
+            cont += 1
     return cont
 
 # def split_features_labels(data_set):
 #     features = data_set.data
 #     labels = data_set.target
-#     return features, labels    
+#     return features, labels
+
 
 def split_train_test(features, labels, test_size):
     total_test_size = int(len(features) * test_size)
@@ -88,8 +90,8 @@ def split_train_test(features, labels, test_size):
     indices = numpy.random.permutation(len(features))
     train_features = features[indices[:-total_test_size]]
     train_labels = labels[indices[:-total_test_size]]
-    test_features  = features[indices[-total_test_size:]]
-    test_labels  = labels[indices[-total_test_size:]]
+    test_features = features[indices[-total_test_size:]]
+    test_labels = labels[indices[-total_test_size:]]
     return train_features, train_labels, test_features, test_labels
 
 
@@ -99,25 +101,29 @@ def split_list(input_array, wanted_parts=1):
     splitted_array = numpy.array_split(backup_array, wanted_parts)
     return splitted_array
 
+
 def generate_shuffle_positions(positions):
     a = list(range(positions))
     a = numpy.array(a)
     numpy.random.shuffle(a)
     return a
 
+
 def shuffle_array(array, shuffle_positions):
     backup_array = numpy.array(array)
     shuffled_array = []
-    for i in range (0, len(shuffle_positions)):
+    for i in range(0, len(shuffle_positions)):
         shuffled_array.append(backup_array[shuffle_positions[i]])
-    return shuffled_array  
+    return shuffled_array
 
 
 def statistic_matrix_init():
     return [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
 
+
 def statistic_data(emotion, predict, stat_matrix):
-    stat_matrix[emotions_dictinary[emotion]][emotions_dictinary[predict[0]]] += 1
+    stat_matrix[emotions_dictinary[emotion]
+                ][emotions_dictinary[predict[0]]] += 1
 
 
 def get_train_test_array(splitted_array, iteration):
@@ -150,8 +156,8 @@ def split_array(labels_array, data_array):
         del labels_array[num-cont]
         # print "Tamanho Backup: " + str(len(labels_backup))
         # print "Tamanho Original: " + str(len(labels_array))
-    return labels_test, data_test  
-    
+    return labels_test, data_test
+
 
 def sorteia_numeros(porcentagem, quantidade_total):
     n = 0
@@ -162,10 +168,7 @@ def sorteia_numeros(porcentagem, quantidade_total):
         if sorteado not in num_sorteados:
             num_sorteados.append(sorteado)
             n += 1
-    return num_sorteados     
-
-
-
+    return num_sorteados
 
 
 def naive_bayes_init():
@@ -235,24 +238,24 @@ def open_actor_features_maximums(actor_number):
 def create_category(deviation, maximus):
     return int(maximus/deviation*2)
 
+
 def get_categories(deviation):
     dataframes = []
     emotions = []
     emotion = 1
     data = []
-    
-    for i in range(1,9):
-        dataframes.append(pd.read_csv("Maximums/Emotion_{:0>2}.csv".format(i), names=feature_labels))
+
+    for i in range(1, 9):
+        dataframes.append(pd.read_csv(
+            "Maximums/Emotion_{:0>2}.csv".format(i), names=feature_labels))
     for dataframe in dataframes:
         for data_row in dataframe.values:
             # if(emotions_dict[emotion] == "Happy" or emotions_dict[emotion] == "Angry"):
                 # if(emotions_dict[emotion] == "Happy" or emotions_dict[emotion] == "Sad" or emotions_dict[emotion] == "Angry" or emotions_dict[emotion] == "Fearful"):
-                    data.append(map(curry(create_category, deviation),data_row))
-                    emotions.append(emotions_dict[emotion])   
+            data.append(map(curry(create_category, deviation), data_row))
+            emotions.append(emotions_dict[emotion])
         emotion += 1
-    return emotions, data 
-
-
+    return emotions, data
 
 
 def getFFTMaximums(fftData, output):
@@ -339,7 +342,7 @@ def get_covered_data_percentile(data_array, deviation):
 # dimension is either 'abs' or 'angle'
 
 
-def getFeaturesDataFrames(domain, **kwargs):
+def get_features_data_frames(domain, **kwargs):
     actors_range = kwargs.get('actor_numbers') or range(1, 25)
     phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
     emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
@@ -359,7 +362,7 @@ def getFeaturesDataFrames(domain, **kwargs):
     )
 
 
-def showGraphs(domain, **kwargs):
+def show_graphs(domain, **kwargs):
     actors_range = kwargs.get('actor_numbers') or range(1, 25)
     phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
     emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
@@ -390,8 +393,8 @@ def showGraphs(domain, **kwargs):
     plt.show()
 
 
-def createEmotionMaximumsFiles():
-    featureMaximums = getFeaturesDataFrames('maximums')
+def create_emotion_maximums_files():
+    featureMaximums = get_features_data_frames('maximums')
 
     emotion_maximums_array = map(lambda n: [], range(1, 9))
 
