@@ -239,8 +239,8 @@ def unwind_features(root, *args):
         return root
     else:
         head, tail = args[0], args[1:]
-        new_roots = map(root, head)
-        return map(lambda new_root: unwind_features(new_root, *tail), new_roots)
+        new_roots = [root(number) for number in head]
+        return [unwind_features(new_root, *tail) for new_root in new_roots]
 
 
 def open_actor_features(actor_number):
