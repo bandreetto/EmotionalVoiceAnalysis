@@ -11,6 +11,44 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils import *
 import heapq
+from sklearn.decomposition import PCA
+
+feature_reducers = {
+    'Zero Crossing Rate':  [numpy.median, numpy.std],
+    'Energy': [numpy.sum, numpy.std],
+    'Entropy of Energy': [numpy.sum, numpy.std],
+    'Spectral Centroid': [numpy.median, numpy.std],
+    'Spectral Spread': [numpy.median, numpy.std],
+    'Spectral Entropy': [numpy.median, numpy.std],
+    'Spectral Flux': [numpy.median, numpy.std],
+    'Spectral Rolloff': [numpy.max, numpy.median, numpy.std],
+    'MFCC1': [numpy.median, numpy.std],
+    'MFCC2': [numpy.median, numpy.std],
+    'MFCC3': [numpy.median, numpy.std],
+    'MFCC4': [numpy.median, numpy.std],
+    'MFCC5': [numpy.median, numpy.std],
+    'MFCC6': [numpy.median, numpy.std],
+    'MFCC7': [numpy.median, numpy.std],
+    'MFCC8': [numpy.median, numpy.std],
+    'MFCC9': [numpy.median, numpy.std],
+    'MFCC10': [numpy.median, numpy.std],
+    'MFCC11': [numpy.median, numpy.std],
+    'MFCC12': [numpy.median, numpy.std],
+    'MFCC13': [numpy.median, numpy.std],
+    'Chroma Vector 1': [numpy.median, numpy.std],
+    'Chroma Vector 2': [numpy.median, numpy.std],
+    'Chroma Vector 3': [numpy.median, numpy.std],
+    'Chroma Vector 4': [numpy.median, numpy.std],
+    'Chroma Vector 5': [numpy.median, numpy.std],
+    'Chroma Vector 6': [numpy.median, numpy.std],
+    'Chroma Vector 7': [numpy.median, numpy.std],
+    'Chroma Vector 8': [numpy.median, numpy.std],
+    'Chroma Vector 9': [numpy.median, numpy.std],
+    'Chroma Vector 10': [numpy.median, numpy.std],
+    'Chroma Vector 11': [numpy.median, numpy.std],
+    'Chroma Vector 12': [numpy.median, numpy.std],
+    'Chroma Deviation': [numpy.median],
+}
 
 emotions_dict = {
     1: "Neutral",
@@ -43,6 +81,12 @@ feature_labels_FFT = [
 # Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised).
 
 # dimension is 'abs', or 'angle'
+
+
+def apply_pca(data_frame):
+    features = list(set(data_frame) - set(['Emotion']))
+    data = data_frame.loc[:, features].values
+    return PCA(n_components=5).fit(data)
 
 
 def extractFFT(actorFeatures, dimension):
@@ -360,6 +404,31 @@ def get_features_data_frames(domain, **kwargs):
         phrases_range,
         emotions_range
     )
+
+
+def unify_data_frames(data_frames, reducers):
+    unified_data_frame = pd.DataFrame()
+
+    for actor in data_frames:
+        for phrase in actor:
+            emotion_number = 1
+            for emotion in phrase:
+                columns_dict = {}
+                for label in feature_labels:
+                    new_columns_data = [
+                        {
+                            '{}_{}'.format(label, index): reducer(emotion[label])
+                        }
+                        for index, reducer in enumerate(reducers[label])
+                    ]
+                    columns_dict = reduce(
+                        merge_dicts, new_columns_data, columns_dict)
+                columns_dict['Emotion'] = emotions_dict[emotion_number]
+                unified_data_frame = unified_data_frame.append(
+                    columns_dict, ignore_index=True)
+                emotion_number += 1
+
+    return unified_data_frame
 
 
 def show_graphs(domain, **kwargs):

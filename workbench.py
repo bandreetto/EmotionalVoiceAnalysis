@@ -8,6 +8,19 @@ from functions import *
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from utils import *
+
+# PCA Example
+
+# data_frames = get_features_data_frames('time')
+
+# unified_data_frame = unify_data_frames(data_frames, feature_reducers)
+
+# pca = apply_pca(unified_data_frame)
+
+# for ratio in pca.explained_variance_ratio_:
+#     print '{:.3f}%'.format(ratio*100)
+
+
 iteracoes = 5
 
 a = generate_shuffle_positions(384)
