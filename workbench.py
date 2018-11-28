@@ -135,9 +135,11 @@ table = []
 for l in range(8):
     if (fnCounter[l] > 0):
         emotion = emotions_dict[l]
-        assertivity = str(hitsIterationSum[l] / fnCounter[l]) + '%'
-        falsePositive = str(falsePositiveIterationSum[l] / fpCounter[l]) + '%'
-        falseNegative = str(falseNegativeIterationSum[l] / fnCounter[l]) + '%'
+        assertivity = '{:.2f}%'.format(hitsIterationSum[l] / fnCounter[l])
+        falsePositive = '{:.2f}%'.format(
+            falsePositiveIterationSum[l] / fpCounter[l])
+        falseNegative = '{: .2f} % '.format(
+            falseNegativeIterationSum[l] / fnCounter[l])
         table.append([emotion, assertivity, falsePositive, falseNegative])
 
 print tabulate(table, headers=['Emocao', 'Acuracia',
