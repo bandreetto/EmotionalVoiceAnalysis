@@ -39,24 +39,21 @@ for i in range (0, iteracoes):
 		statistic_data(emotion_test[j], predict, statistic_matrix)
 		# statistic_matrix = numpy.array(statistic_matrix, dtype=numpy.float32)
 		# statistic_matrix = statistic_matrix/len(emotion_test)+1
+
+		allResults = statistic_matrix[0]+statistic_matrix[1]+statistic_matrix[2]+statistic_matrix[3]+statistic_matrix[4]+statistic_matrix[5]+statistic_matrix[6]+statistic_matrix[7]
+		for k in range(8):
+			print "---------------------------------------------"
+			print str(statistic_matrix[k]) + " Soma: " +str(sum(statistic_matrix[k]))
+			hitsAbsNumber = statistic_matrix[k].count(k)
+			hitsPercentage = float(hitsAbsNumber) / len(statistic_matrix[k]) * 100
+			falseNegativesPercentage = 100 - hitsPercentage
+			falsePositivesAbsNumber = float(allResults.count(k) - hitsAbsNumber)
+			falsePositivesPercentage =  falsePositivesAbsNumber / len(allResults) * 100
+			print ('Acertos: ' + str(hitsPercentage) + '%')
+			print ('Falsos positivos (tipo I): ' + str(falsePositivesPercentage) + '%')
+			print ('Falsos negativos (tipo II): ' + str(falseNegativesPercentage) + '%')
 		print "---------------------------------------------"
-		print str(statistic_matrix[0]) + " Soma: " +str(sum(statistic_matrix[0]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[1]) + " Soma: " +str(sum(statistic_matrix[1]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[2]) + " Soma: " +str(sum(statistic_matrix[2]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[3]) + " Soma: " +str(sum(statistic_matrix[3]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[4]) + " Soma: " +str(sum(statistic_matrix[4]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[5]) + " Soma: " +str(sum(statistic_matrix[5]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[6]) + " Soma: " +str(sum(statistic_matrix[6]))
-		print "---------------------------------------------"
-		print str(statistic_matrix[7]) + " Soma: " +str(sum(statistic_matrix[7]))
-		print "---------------------------------------------"
-		print "Checksum: "+str(sum(statistic_matrix[0]+statistic_matrix[1]+statistic_matrix[2]+statistic_matrix[3]+statistic_matrix[4]+statistic_matrix[5]+statistic_matrix[6]+statistic_matrix[7]))
+		print "Checksum: "+str(sum(allResults))
 
 
 
@@ -171,7 +168,7 @@ for i in range (0, iteracoes):
 # 	print "Checksum : "+ str(neutral_st+calm_st+happy_st+sad_st+angry_st+fearful_st+disgust_st+surprised_st)
 # 	print "---------------------------------------------"
 
-	
+
 
 
 
