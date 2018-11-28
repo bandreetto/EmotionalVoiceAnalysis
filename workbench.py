@@ -8,6 +8,7 @@ from functions import *
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from utils import *
+from tabulate import tabulate
 
 # PCA Example
 
@@ -32,7 +33,18 @@ print len(emotions)
 # emotions = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
 # data = [["Teste 1"], ["Teste 2"], ["Teste 3"], ["Teste 4"], ["Teste 5"], ["Teste 6"], ["Teste 7"], ["Teste 8"], ["Teste 9"], ["Teste 10"]]
 for i in range (0, iteracoes):
-	resultsCounter = {
+	fnCounter = {
+		0: 0,
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+		5: 0,
+		6: 0,
+		7: 0,
+	}
+
+	fpCounter = {
 		0: 0,
 		1: 0,
 		2: 0,
@@ -101,18 +113,24 @@ for i in range (0, iteracoes):
 			if (totalTriesForEmotion > 0):
 				hitsPercentage = float(hitsAbsNumber) / sum(statistic_matrix[k]) * 100
 				falseNegativesPercentage = 100 - hitsPercentage
-				falsePositivesAbsNumber = float(allResults[k] - hitsAbsNumber)
-				falsePositivesPercentage =  falsePositivesAbsNumber / sum(allResults) * 100
-
-				falsePositiveIterationSum[k] = falsePositiveIterationSum[k] + falsePositivesPercentage
 				falseNegativeIterationSum[k] = falseNegativeIterationSum[k] + falseNegativesPercentage
 				hitsIterationSum[k] = hitsIterationSum[k] + hitsPercentage
-				resultsCounter[k] = resultsCounter[k] + 1
+				fnCounter[k] = fnCounter[k] + 1
 
+				if (sum(allResults) - totalTriesForEmotion > 0):
+					falsePositivesAbsNumber = float(allResults[k] - hitsAbsNumber)
+					falsePositivesPercentage =  falsePositivesAbsNumber / (sum(allResults) - totalTriesForEmotion) * 100
+					falsePositiveIterationSum[k] = falsePositiveIterationSum[k] + falsePositivesPercentage
+					fpCounter[k] = fpCounter[k] + 1
+
+
+table = []
 for l in range(8):
-	if (resultsCounter[l] > 0):
-		print ('------------------------------------------------------------------------------------')
-		print ('Emocao: ' + emotions_dict[l])
-		print ('Acertividae: ' + str(hitsIterationSum[l]/resultsCounter[l]) + '%' )
-		print ('Falsos positivos (tipo I): ' + str(falsePositiveIterationSum[l]/resultsCounter[l]) + '%')
-		print ('Falsos negativos (tipo II): ' + str(falseNegativeIterationSum[l]/resultsCounter[l]) + '%')
+	if (fnCounter[l] > 0):
+		emotion = emotions_dict[l]
+		assertivity = str(hitsIterationSum[l]/fnCounter[l]) + '%'
+		falsePositive = str(falsePositiveIterationSum[l]/fpCounter[l]) + '%'
+		falseNegative = str(falseNegativeIterationSum[l]/fnCounter[l]) + '%'
+		table.append([emotion, assertivity, falsePositive, falseNegative])
+
+print tabulate(table, headers=['Emocao', 'Acuracia', 'FN (tipo 1)', 'FP (tipo 2)'], tablefmt='orgtbl')
