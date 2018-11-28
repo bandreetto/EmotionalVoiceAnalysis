@@ -23,7 +23,7 @@ emotions_dict = {
     8: "Surprised",
 }
 
-emotions_dictinary = {
+emotions_dictionary = {
     "Neutral":  0,
     "Calm": 1,
     "Happy": 2,
@@ -122,8 +122,8 @@ def statistic_matrix_init():
 
 
 def statistic_data(emotion, predict, stat_matrix):
-    stat_matrix[emotions_dictinary[emotion]
-                ][emotions_dictinary[predict[0]]] += 1
+    stat_matrix[emotions_dictionary[emotion]
+                ][emotions_dictionary[predict[0]]] += 1
 
 
 def get_train_test_array(splitted_array, iteration):
