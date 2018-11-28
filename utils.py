@@ -1,5 +1,6 @@
 import os
 
+
 class curry:
     def __init__(self, fun, *args, **kwargs):
         self.fun = fun
@@ -14,6 +15,12 @@ class curry:
             kw = kwargs or self.kwargs
 
         return self.fun(*(self.pending + args), **kw)
+
+
+def merge_dicts(d1, d2):
+    d_aux = d1.copy()
+    d_aux.update(d2)
+    return d_aux
 
 
 def createFolder(directory):
