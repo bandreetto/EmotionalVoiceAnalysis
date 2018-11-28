@@ -373,7 +373,7 @@ def show_graphs(domain, **kwargs):
     formatted_domain = domain if domain == 'time' else 'FTT({})'.format(
         dimension if dimension == 'angle' else 'abs')
 
-    features_data_frames = getFeaturesDataFrames(domain, **kwargs)
+    features_data_frames = get_features_data_frames(domain, **kwargs)
 
     print 'Generating {} graphs for\n      features: {}\n      emotions: {}\n      phrases: {}\n      actors: {}\n'.format(
         formatted_domain, features_range, emotions_range, phrases_range, actors_range)
