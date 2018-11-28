@@ -10,8 +10,6 @@ from sklearn.metrics import accuracy_score
 from utils import *
 iteracoes = 5
 
-
-
 a = generate_shuffle_positions(384)
 emotions, data = get_categories(1)
 emotions = shuffle_array(emotions, a)
@@ -20,6 +18,39 @@ print len(emotions)
 # emotions = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
 # data = [["Teste 1"], ["Teste 2"], ["Teste 3"], ["Teste 4"], ["Teste 5"], ["Teste 6"], ["Teste 7"], ["Teste 8"], ["Teste 9"], ["Teste 10"]]
 for i in range (0, iteracoes):
+	resultsCounter = {
+		0: 0,
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+		5: 0,
+		6: 0,
+		7: 0,
+	}
+
+	falsePositiveIterationSum = {
+		0: 0,
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+		5: 0,
+		6: 0,
+		7: 0,
+	}
+
+	falseNegativeIterationSum = {
+		0: 0,
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+		5: 0,
+		6: 0,
+		7: 0,
+	}
+
 	statistic_matrix = statistic_matrix_init();
 	classifier = naive_bayes_init()
 	emotions_splitted = split_list(emotions, 5)
@@ -40,20 +71,32 @@ for i in range (0, iteracoes):
 		# statistic_matrix = numpy.array(statistic_matrix, dtype=numpy.float32)
 		# statistic_matrix = statistic_matrix/len(emotion_test)+1
 
-		allResults = statistic_matrix[0]+statistic_matrix[1]+statistic_matrix[2]+statistic_matrix[3]+statistic_matrix[4]+statistic_matrix[5]+statistic_matrix[6]+statistic_matrix[7]
+		allResults = [statistic_matrix[0],statistic_matrix[1],statistic_matrix[2],statistic_matrix[3],statistic_matrix[4],statistic_matrix[5],statistic_matrix[6],statistic_matrix[7]]
+		allResults = list(map(sum, zip(*allResults)))
 		for k in range(8):
 			print "---------------------------------------------"
 			print str(statistic_matrix[k]) + " Soma: " +str(sum(statistic_matrix[k]))
-			hitsAbsNumber = statistic_matrix[k].count(k)
-			hitsPercentage = float(hitsAbsNumber) / len(statistic_matrix[k]) * 100
-			falseNegativesPercentage = 100 - hitsPercentage
-			falsePositivesAbsNumber = float(allResults.count(k) - hitsAbsNumber)
-			falsePositivesPercentage =  falsePositivesAbsNumber / len(allResults) * 100
-			print ('Acertos: ' + str(hitsPercentage) + '%')
-			print ('Falsos positivos (tipo I): ' + str(falsePositivesPercentage) + '%')
-			print ('Falsos negativos (tipo II): ' + str(falseNegativesPercentage) + '%')
+			totalTriesForEmotion = sum(statistic_matrix[k])
+			hitsAbsNumber = statistic_matrix[k][k]
+			if (totalTriesForEmotion > 0):
+				hitsPercentage = float(hitsAbsNumber) / sum(statistic_matrix[k]) * 100
+				falseNegativesPercentage = 100 - hitsPercentage
+				falsePositivesAbsNumber = float(allResults[k] - hitsAbsNumber)
+				falsePositivesPercentage =  falsePositivesAbsNumber / sum(allResults) * 100
+				print ('Acertos: ' + str(hitsPercentage) + '%')
+				print ('Falsos positivos (tipo I): ' + str(falsePositivesPercentage) + '%')
+				print ('Falsos negativos (tipo II): ' + str(falseNegativesPercentage) + '%')
+				falsePositiveIterationSum[k] = falsePositiveIterationSum[k] + falsePositivesPercentage
+				falseNegativeIterationSum[k] = falseNegativeIterationSum[k] + falseNegativesPercentage
+				resultsCounter[k] = resultsCounter[k] + 1
 		print "---------------------------------------------"
 		print "Checksum: "+str(sum(allResults))
+
+for l in range(8):
+	if (resultsCounter[l] > 0):
+		print ('Emocao: ' + str(l))
+		print ('Falsos positivos (tipo I): ' + str(falsePositiveIterationSum[l]/resultsCounter[l]) + '%')
+		print ('Falsos negativos (tipo II): ' + str(falseNegativeIterationSum[l]/resultsCounter[l]) + '%')
 
 
 
