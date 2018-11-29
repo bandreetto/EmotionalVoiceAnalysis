@@ -13,41 +13,59 @@ from utils import *
 import heapq
 from sklearn.decomposition import PCA
 
+
+def apply_fft(dimension, data_array):
+    ftt_data = fft(data_array)
+
+    if dimension == 'angle':
+        return numpy.angle(ftt_data)
+    else:
+        return numpy.abs(ftt_data)
+
+
+def get_natural_frequency(data_array):
+    ftt_data = apply_fft('abs', data_array)
+    indexes_of_local_max, = argrelextrema(ftt_data, numpy.greater)
+    values_of_local_max = [ftt_data[index] for index in indexes_of_local_max]
+    greatest_local_max = max(values_of_local_max)
+    return list(ftt_data).index(greatest_local_max)
+
+
 feature_reducers = {
-    'Zero Crossing Rate':  [numpy.median, numpy.std],
-    'Energy': [numpy.sum, numpy.std],
-    'Entropy of Energy': [numpy.sum, numpy.std],
-    'Spectral Centroid': [numpy.median, numpy.std],
-    'Spectral Spread': [numpy.median, numpy.std],
-    'Spectral Entropy': [numpy.median, numpy.std],
-    'Spectral Flux': [numpy.median, numpy.std],
-    'Spectral Rolloff': [numpy.max, numpy.median, numpy.std],
-    'MFCC1': [numpy.median, numpy.std],
-    'MFCC2': [numpy.median, numpy.std],
-    'MFCC3': [numpy.median, numpy.std],
-    'MFCC4': [numpy.median, numpy.std],
-    'MFCC5': [numpy.median, numpy.std],
-    'MFCC6': [numpy.median, numpy.std],
-    'MFCC7': [numpy.median, numpy.std],
-    'MFCC8': [numpy.median, numpy.std],
-    'MFCC9': [numpy.median, numpy.std],
-    'MFCC10': [numpy.median, numpy.std],
-    'MFCC11': [numpy.median, numpy.std],
-    'MFCC12': [numpy.median, numpy.std],
-    'MFCC13': [numpy.median, numpy.std],
-    'Chroma Vector 1': [numpy.median, numpy.std],
-    'Chroma Vector 2': [numpy.median, numpy.std],
-    'Chroma Vector 3': [numpy.median, numpy.std],
-    'Chroma Vector 4': [numpy.median, numpy.std],
-    'Chroma Vector 5': [numpy.median, numpy.std],
-    'Chroma Vector 6': [numpy.median, numpy.std],
-    'Chroma Vector 7': [numpy.median, numpy.std],
-    'Chroma Vector 8': [numpy.median, numpy.std],
-    'Chroma Vector 9': [numpy.median, numpy.std],
-    'Chroma Vector 10': [numpy.median, numpy.std],
-    'Chroma Vector 11': [numpy.median, numpy.std],
-    'Chroma Vector 12': [numpy.median, numpy.std],
-    'Chroma Deviation': [numpy.median],
+    'Zero Crossing Rate':  [numpy.median, numpy.std, get_natural_frequency],
+    'Energy': [numpy.sum, numpy.std, get_natural_frequency],
+    'Entropy of Energy': [numpy.sum, numpy.std, get_natural_frequency],
+    'Spectral Centroid': [numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Spread': [numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Entropy': [numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Flux': [numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Rolloff': [numpy.max, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC1': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC2': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC3': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC4': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC5': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC6': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC7': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC8': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC9': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC10': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC11': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC12': [numpy.median, numpy.std, get_natural_frequency],
+    'MFCC13': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 1': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 2': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 3': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 4': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 5': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 6': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 7': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 8': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 9': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 10': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 11': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 12': [numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Deviation': [numpy.median, get_natural_frequency],
 }
 
 emotions_dict = {
@@ -86,7 +104,7 @@ feature_labels_FFT = [
 def apply_pca(data_frame):
     features = list(set(data_frame) - set(['Emotion']))
     data = data_frame.loc[:, features].values
-    return PCA(n_components=5).fit(data)
+    return PCA().fit(data)
 
 
 def extractFFT(actorFeatures, dimension):
