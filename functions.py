@@ -119,8 +119,8 @@ def apply_pca(data_frame, n_components):
             explained_variance += ratio
         print 'Component n {:>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
             index, ratio*100, accumulated_ratio*100)
-    print '\nChoosed components: {}\nExplained Variance: {}\n'.format(
-        pca.n_components_, explained_variance)
+    print '\nChoosed components: {}\nExplained Variance: {:.3f}%\n'.format(
+        pca.n_components_, explained_variance*100)
     pca_data_frame = pd.DataFrame(data=pca.transform(data), columns=[
         'Component {}'.format(i) for i in range(0, pca.n_components_)])
     pca_data_frame['Emotion'] = emotions
