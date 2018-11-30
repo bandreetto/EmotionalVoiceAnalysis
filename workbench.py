@@ -23,13 +23,15 @@ data_frames = get_features_data_frames('time')
 
 unified_data_frame = unify_data_frames(data_frames, feature_reducers)
 
-pca = apply_pca(unified_data_frame)
+pca_data_frame = apply_pca(unified_data_frame, n_components=.9)
 
-accumulated_ratio = 0
-for index, ratio in enumerate(pca.explained_variance_ratio_):
-    accumulated_ratio += ratio
-    print 'Component n {:0>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
-        index, ratio*100, accumulated_ratio*100)
+print pca_data_frame
+
+# accumulated_ratio = 0
+# for index, ratio in enumerate(pca.explained_variance_ratio_):
+#     accumulated_ratio += ratio
+#     print 'Component n {:0>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
+#         index, ratio*100, accumulated_ratio*100)
 
 # emotions_dict = ["Neutro", "Calma", "Felicidade",
 #                  "Tristeza", "Raiva", "Medo", "Nojo", "Surpresa"]

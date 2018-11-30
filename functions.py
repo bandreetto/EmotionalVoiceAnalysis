@@ -98,13 +98,37 @@ feature_labels_FFT = [
 
 # Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised).
 
-# dimension is 'abs', or 'angle'
 
-
-def apply_pca(data_frame):
+# n_components is the number of components to use o PCA,
+# if n_components is < 1, then the number of components
+# is automaticly choose to fit the percentage passed in
+# n_components, e.g. with n_components assigned to .9
+# the function will choose k components so that 90% of
+# the variance is explained
+def apply_pca(data_frame, n_components):
     features = list(set(data_frame) - set(['Emotion']))
     data = data_frame.loc[:, features].values
-    return PCA().fit(data)
+    emotions = data_frame.loc[:, ['Emotion']].values
+
+    pca = PCA(n_components=n_components).fit(data)
+    accumulated_ratio = 0
+    explained_variance = 0
+    for index, ratio in enumerate(pca.explained_variance_ratio_):
+        accumulated_ratio += ratio
+        if (index < pca.n_components_):
+            explained_variance += ratio
+        print 'Component n {:>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
+            index, ratio*100, accumulated_ratio*100)
+    print '\nChoosed components: {}\nExplained Variance: {}\n'.format(
+        pca.n_components_, explained_variance)
+    pca_data_frame = pd.DataFrame(data=pca.transform(data), columns=[
+        'Component {}'.format(i) for i in range(0, pca.n_components_)])
+    pca_data_frame['Emotion'] = emotions
+
+    return pca_data_frame
+
+
+# dimension is 'abs', or 'angle'
 
 
 def extractFFT(actorFeatures, dimension):
