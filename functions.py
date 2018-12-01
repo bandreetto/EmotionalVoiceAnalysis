@@ -208,8 +208,7 @@ def statistic_matrix_init():
 
 
 def statistic_data(emotion, predict, stat_matrix):
-    stat_matrix[emotions_dictionary[emotion]
-                ][emotions_dictionary[predict[0]]] += 1
+    stat_matrix[emotions_dictionary[emotion[0]]][emotions_dictionary[predict[0]]] += 1
 
 
 def get_train_test_array(splitted_array, iteration):
