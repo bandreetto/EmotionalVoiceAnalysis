@@ -26,42 +26,97 @@ unified_data_frame = unify_data_frames(data_frames, feature_reducers)
 pca_data_frame = apply_pca(unified_data_frame, n_components=.9)
 
 a = pca_data_frame.values
-# print len(a)
+print len(a[0]) - 1
 
 emotions = []
 data = []
-for row in range(0,384):
-	emotions.append([a[row][24]])
-	b = a[row][0:24]
-	data.append(b)
+for row in range(0, 384):
+    if(a[row][len(a[0]) - 1] == 'Happy' or a[row][len(a[0]) - 1] == 'Angry' or a[row][len(a[0]) - 1] == 'Sad' or a[row][len(a[0]) - 1] == 'Fearful'):
+        emotions.append([a[row][len(a[0]) - 1]])
+        b = a[row][0:len(a[0]) - 1]
+        data.append(b)
 data = numpy.array(data)
-accumulated_ratio = 0
-# for index, ratio in enumerate(pca.explained_variance_ratio_):
-#     accumulated_ratio += ratio
-#     print 'Component n {:0>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
-#         index, ratio*100, accumulated_ratio*100)
 
-emotions_dict = ["Neutro", "Calma", "Felicidade",
-                 "Tristeza", "Raiva", "Medo", "Nojo", "Surpresa"]
 
+# # accumulated_ratio = 0
+# # for index, ratio in enumerate(pca.explained_variance_ratio_):
+# #     accumulated_ratio += ratio
+# #     print 'Component n {:0>2} Eplained ratio: {:.3f}%         Accumulated ratio: {:.3f}%'.format(
+# #         index, ratio*100, accumulated_ratio*100)
+
+# emotions_dict = ["Neutro", "Calma", "Felicidade",
+#                  "Tristeza", "Raiva", "Medo", "Nojo", "Surpresa"]
+
+emotions_dict = ["Felicidade",
+                 "Tristeza", "Raiva", "Medo"]
 iteracoes = 5
 
-a = generate_shuffle_positions(384)
+a = generate_shuffle_positions(len(data))
 # emotions, data = get_categories(1)
 emotions = shuffle_array(emotions, a)
 data = shuffle_array(data, a)
 # emotions = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
 # data = [["Teste 1"], ["Teste 2"], ["Teste 3"], ["Teste 4"], ["Teste 5"], ["Teste 6"], ["Teste 7"], ["Teste 8"], ["Teste 9"], ["Teste 10"]]
 for i in range(0, iteracoes):
+        # fnCounter = {
+ #        0: 0,
+ #        1: 0,
+ #        2: 0,
+ #        3: 0,
+ #        4: 0,
+ #        5: 0,
+ #        6: 0,
+ #        7: 0,
+ #    }
+
+ #    fpCounter = {
+ #        0: 0,
+ #        1: 0,
+ #        2: 0,
+ #        3: 0,
+ #        4: 0,
+ #        5: 0,
+ #        6: 0,
+ #        7: 0,
+ #    }
+
+ #    falsePositiveIterationSum = {
+ #        0: 0,
+ #        1: 0,
+ #        2: 0,
+ #        3: 0,
+ #        4: 0,
+ #        5: 0,
+ #        6: 0,
+ #        7: 0,
+ #    }
+
+ #    falseNegativeIterationSum = {
+ #        0: 0,
+ #        1: 0,
+ #        2: 0,
+ #        3: 0,
+ #        4: 0,
+ #        5: 0,
+ #        6: 0,
+ #        7: 0,
+ #    }
+
+ #    hitsIterationSum = {
+ #        0: 0,
+ #        1: 0,
+ #        2: 0,
+ #        3: 0,
+ #        4: 0,
+ #        5: 0,
+ #        6: 0,
+ #        7: 0,
+ #    }
     fnCounter = {
         0: 0,
         1: 0,
         2: 0,
         3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
     }
 
     fpCounter = {
@@ -69,10 +124,6 @@ for i in range(0, iteracoes):
         1: 0,
         2: 0,
         3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
     }
 
     falsePositiveIterationSum = {
@@ -80,10 +131,6 @@ for i in range(0, iteracoes):
         1: 0,
         2: 0,
         3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
     }
 
     falseNegativeIterationSum = {
@@ -91,10 +138,6 @@ for i in range(0, iteracoes):
         1: 0,
         2: 0,
         3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
     }
 
     hitsIterationSum = {
@@ -102,10 +145,6 @@ for i in range(0, iteracoes):
         1: 0,
         2: 0,
         3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
     }
 
     statistic_matrix = statistic_matrix_init()
@@ -125,10 +164,13 @@ for i in range(0, iteracoes):
         # statistic_matrix = numpy.array(statistic_matrix, dtype=numpy.float32)
         # statistic_matrix = statistic_matrix/len(emotion_test)+1
 
-        allResults = [statistic_matrix[0], statistic_matrix[1], statistic_matrix[2], statistic_matrix[3],
-                      statistic_matrix[4], statistic_matrix[5], statistic_matrix[6], statistic_matrix[7]]
+        allResults = [statistic_matrix[0], statistic_matrix[
+            1], statistic_matrix[2], statistic_matrix[3]]
+        # allResults = [statistic_matrix[0], statistic_matrix[1], statistic_matrix[2], statistic_matrix[3],
+        # statistic_matrix[4], statistic_matrix[5], statistic_matrix[6],
+        # statistic_matrix[7]]
         allResults = list(map(sum, zip(*allResults)))
-        for k in range(8):
+        for k in range(4):
             totalTriesForEmotion = sum(statistic_matrix[k])
             hitsAbsNumber = statistic_matrix[k][k]
             if (totalTriesForEmotion > 0):
@@ -151,7 +193,7 @@ for i in range(0, iteracoes):
 
 
 table = []
-for l in range(8):
+for l in range(4):
     if (fnCounter[l] > 0):
         emotion = emotions_dict[l]
         assertivity = '{:.2f}%'.format(hitsIterationSum[l] / fnCounter[l])
