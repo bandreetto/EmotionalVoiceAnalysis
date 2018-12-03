@@ -443,9 +443,6 @@ def extractAndSaveAllDataFFT():
         actorCounter += 1
 
 
-extractAndSaveAllDataFFT()
-
-
 def get_covered_data_percentile(data_array, deviation):
     if deviation < 0:
         raise ValueError('deviation must be a positive value')
@@ -461,7 +458,7 @@ def get_covered_data_percentile(data_array, deviation):
 
 def get_features_data_frames(domain, **kwargs):
     actors_range = kwargs.get('actor_numbers') or range(1, 25)
-    phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
+    phrases_range = kwargs.get('phrase_numbers') or range(1, 5)
     emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
     dimension = kwargs.get('dimension')
 
