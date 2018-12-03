@@ -78,10 +78,11 @@ while categories_deviation < .5:
     y_fearful.append(mean_statistics['Fearful']['Fearful'])
     y_happy.append(mean_statistics['Happy']['Happy'])
     y_sad.append(mean_statistics['Sad']['Sad'])
-    categories_deviation += .05
+    categories_deviation += .01
 
 plt.plot(x, y_angry, 'r')
 plt.plot(x, y_fearful, 'g')
 plt.plot(x, y_happy, 'y')
 plt.plot(x, y_sad, 'b')
+plt.title('Explained Variance: {}'.format(explained_variance))
 plt.show()
