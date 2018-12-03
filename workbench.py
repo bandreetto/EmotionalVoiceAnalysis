@@ -55,6 +55,7 @@ data = shuffle_array(data, positions_to_shuffle)
 emotions_splitted = split_list(emotions, n_testing_slices)
 data_splitted = split_list(data, n_testing_slices)
 
+statistics_data_frames = []
 for iteration in range(0, n_testing_slices):
     emotion_train, emotion_test = get_train_test_array(
         emotions_splitted, iteration)
@@ -62,5 +63,9 @@ for iteration in range(0, n_testing_slices):
     statistics = test_model(
         (emotion_train, emotion_test), (data_train, data_test))
 
-    print pd.DataFrame(statistics).apply(
-        lambda p: p*100).fillna(0)
+    statistics_data_frames.append(pd.DataFrame(statistics).apply(
+        lambda p: p*100).fillna(0))
+
+concat_dfs = pd.concat(statistics_data_frames)
+mean_statistics = concat_dfs.groupby(concat_dfs.index).mean()
+print pd.DataFrame(mean_statistics)
