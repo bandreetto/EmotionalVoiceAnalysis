@@ -19,17 +19,18 @@ from tabulate import tabulate
 
 # PCA Example
 
-# , emotion_numbers=[3, 4, 5, 6])
 data_frames = get_features_data_frames('time')
+# , emotion_numbers=[3, 4, 5, 6])
 
-unified_data_frame = unify_data_frames(data_frames, feature_reducers)  # , {
+unified_data_frame = unify_data_frames(data_frames, feature_reducers)
+# {
 # 1: 'Happy', 2: 'Sad', 3: 'Angry', 4: 'Fearful'})
 
-pca_data_frame = apply_pca(unified_data_frame, n_components=.9)
+pca_data_frame = apply_pca(unified_data_frame, n_components=.99)
 
 components = list(set(pca_data_frame) - set(['Emotion']))
 for component in components:
-    pca_data_frame[component] = categorize_data(.2, pca_data_frame[component])
+    pca_data_frame[component] = categorize_data(.01, pca_data_frame[component])
 data = pca_data_frame.loc[:, components].values
 emotions = pca_data_frame.loc[:, ['Emotion']].values
 
