@@ -66,7 +66,7 @@ while categories_deviation < .5:
             (emotion_train, emotion_test), (data_train, data_test))
 
         statistics_data_frames.append(pd.DataFrame(statistics).apply(
-            lambda p: p*100).fillna(0))
+            lambda p: p * 100).fillna(0))
 
     concat_dfs = pd.concat(statistics_data_frames)
     mean_statistics = concat_dfs.groupby(concat_dfs.index).mean()
@@ -84,4 +84,5 @@ plt.plot(x, y_angry, 'r')
 plt.plot(x, y_fearful, 'g')
 plt.plot(x, y_happy, 'y')
 plt.plot(x, y_sad, 'b')
+plt.title('Second natural frequency')
 plt.show()
