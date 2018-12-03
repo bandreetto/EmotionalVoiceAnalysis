@@ -59,4 +59,4 @@ for iteration in range(0, n_slices):
         (emotion_train, emotion_test), (data_train, data_test))
 
     print pd.DataFrame(statistics).apply(
-        lambda p: p*100)
+        lambda p: p*100).fillna(0)
