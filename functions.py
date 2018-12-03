@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from utils import *
 import heapq
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 
 def apply_fft(dimension, data_array):
@@ -31,227 +32,42 @@ def get_natural_frequency(data_array):
     return list(ftt_data).index(greatest_local_max)
 
 
-# feature_reducers = {
-#     'Zero Crossing Rate':  [get_natural_frequency],
-#     'Energy': [get_natural_frequency],
-#     'Entropy of Energy': [get_natural_frequency],
-#     'Spectral Centroid': [get_natural_frequency],
-#     'Spectral Spread': [get_natural_frequency],
-#     'Spectral Entropy': [get_natural_frequency],
-#     'Spectral Flux': [get_natural_frequency],
-#     'Spectral Rolloff': [get_natural_frequency],
-#     'MFCC1': [get_natural_frequency],
-#     'MFCC2': [get_natural_frequency],
-#     'MFCC3': [get_natural_frequency],
-#     'MFCC4': [get_natural_frequency],
-#     'MFCC5': [get_natural_frequency],
-#     'MFCC6': [get_natural_frequency],
-#     'MFCC7': [get_natural_frequency],
-#     'MFCC8': [get_natural_frequency],
-#     'MFCC9': [get_natural_frequency],
-#     'MFCC10': [get_natural_frequency],
-#     'MFCC11': [get_natural_frequency],
-#     'MFCC12': [get_natural_frequency],
-#     'MFCC13': [get_natural_frequency],
-#     'Chroma Vector 1': [get_natural_frequency],
-#     'Chroma Vector 2': [get_natural_frequency],
-#     'Chroma Vector 3': [get_natural_frequency],
-#     'Chroma Vector 4': [get_natural_frequency],
-#     'Chroma Vector 5': [get_natural_frequency],
-#     'Chroma Vector 6': [get_natural_frequency],
-#     'Chroma Vector 7': [get_natural_frequency],
-#     'Chroma Vector 8': [get_natural_frequency],
-#     'Chroma Vector 9': [get_natural_frequency],
-#     'Chroma Vector 10': [get_natural_frequency],
-#     'Chroma Vector 11': [get_natural_frequency],
-#     'Chroma Vector 12': [get_natural_frequency],
-#     'Chroma Deviation': [get_natural_frequency],
-# }
-
-# feature_reducers = {
-#     'Zero Crossing Rate':  [numpy.median, numpy.mean, get_natural_frequency],
-#     'Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-#     'Entropy of Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-#     'Spectral Centroid': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Spectral Spread': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Spectral Entropy': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Spectral Flux': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Spectral Rolloff': [numpy.max, numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC1': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC2': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC3': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC4': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC5': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC6': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC7': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC8': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC9': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC10': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC11': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC12': [numpy.median, numpy.mean, get_natural_frequency],
-#     'MFCC13': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 1': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 2': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 3': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 4': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 5': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 6': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 7': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 8': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 9': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 10': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 11': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Vector 12': [numpy.median, numpy.mean, get_natural_frequency],
-#     'Chroma Deviation': [numpy.median, numpy.mean, get_natural_frequency],
-# }
-
-# feature_reducers = {
-#     'Zero Crossing Rate':  [numpy.median, numpy.std, get_natural_frequency],
-#     'Energy': [numpy.sum, numpy.std, get_natural_frequency],
-#     'Entropy of Energy': [numpy.sum, numpy.std, get_natural_frequency],
-#     'Spectral Centroid': [numpy.median, numpy.std, get_natural_frequency],
-#     'Spectral Spread': [numpy.median, numpy.std, get_natural_frequency],
-#     'Spectral Entropy': [numpy.median, numpy.std, get_natural_frequency],
-#     'Spectral Flux': [numpy.median, numpy.std, get_natural_frequency],
-#     'Spectral Rolloff': [numpy.max, numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC1': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC2': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC3': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC4': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC5': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC6': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC7': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC8': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC9': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC10': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC11': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC12': [numpy.median, numpy.std, get_natural_frequency],
-#     'MFCC13': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 1': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 2': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 3': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 4': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 5': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 6': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 7': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 8': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 9': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 10': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 11': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Vector 12': [numpy.median, numpy.std, get_natural_frequency],
-#     'Chroma Deviation': [numpy.median, get_natural_frequency],
-# }
-
 feature_reducers = {
-    'Zero Crossing Rate':  [numpy.median, numpy.mean, get_natural_frequency],
-    'Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-    'Entropy of Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-    'Spectral Centroid': [numpy.median, numpy.mean, get_natural_frequency],
-    'Spectral Spread': [numpy.median, numpy.mean, get_natural_frequency],
-    'Spectral Entropy': [numpy.median, numpy.mean, get_natural_frequency],
-    'Spectral Flux': [numpy.median, numpy.mean, get_natural_frequency],
-    'Spectral Rolloff': [numpy.max, numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC1': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC2': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC3': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC4': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC5': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC6': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC7': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC8': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC9': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC10': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC11': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC12': [numpy.median, numpy.mean, get_natural_frequency],
-    'MFCC13': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 1': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 2': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 3': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 4': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 5': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 6': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 7': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 8': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 9': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 10': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 11': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Vector 12': [numpy.median, numpy.mean, get_natural_frequency],
-    'Chroma Deviation': [numpy.median, get_natural_frequency],
+    'Zero Crossing Rate':  [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Energy': [numpy.sum, numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Entropy of Energy': [numpy.sum, numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Centroid': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Spread': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Entropy': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Flux': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Spectral Rolloff': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC1': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC2': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC3': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC4': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC5': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC6': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC7': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC8': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC9': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC10': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC11': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC12': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'MFCC13': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 1': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 2': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 3': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 4': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 5': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 6': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 7': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 8': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 9': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 10': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 11': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Vector 12': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
+    'Chroma Deviation': [numpy.mean, numpy.median, numpy.std, get_natural_frequency],
 }
-
-feature_reducers = {
-    'Zero Crossing Rate':  [numpy.mean, get_natural_frequency],
-    'Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-    'Entropy of Energy': [numpy.sum, numpy.mean, get_natural_frequency],
-    'Spectral Centroid': [numpy.mean, get_natural_frequency],
-    'Spectral Spread': [numpy.mean, get_natural_frequency],
-    'Spectral Entropy': [numpy.mean, get_natural_frequency],
-    'Spectral Flux': [numpy.mean, get_natural_frequency],
-    'Spectral Rolloff': [numpy.max,  numpy.mean, get_natural_frequency],
-    'MFCC1': [numpy.mean, get_natural_frequency],
-    'MFCC2': [numpy.mean, get_natural_frequency],
-    'MFCC3': [numpy.mean, get_natural_frequency],
-    'MFCC4': [numpy.mean, get_natural_frequency],
-    'MFCC5': [numpy.mean, get_natural_frequency],
-    'MFCC6': [numpy.mean, get_natural_frequency],
-    'MFCC7': [numpy.mean, get_natural_frequency],
-    'MFCC8': [numpy.mean, get_natural_frequency],
-    'MFCC9': [numpy.mean, get_natural_frequency],
-    'MFCC10': [numpy.mean, get_natural_frequency],
-    'MFCC11': [numpy.mean, get_natural_frequency],
-    'MFCC12': [numpy.mean, get_natural_frequency],
-    'MFCC13': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 1': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 2': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 3': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 4': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 5': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 6': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 7': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 8': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 9': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 10': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 11': [numpy.mean, get_natural_frequency],
-    'Chroma Vector 12': [numpy.mean, get_natural_frequency],
-    'Chroma Deviation': [get_natural_frequency],
-}
-
-# feature_reducers = {
-#     'Zero Crossing Rate':  [numpy.std, get_natural_frequency],
-#     'Energy': [numpy.std, get_natural_frequency],
-#     'Entropy of Energy': [numpy.std, get_natural_frequency],
-#     'Spectral Centroid': [numpy.std, get_natural_frequency],
-#     'Spectral Spread': [numpy.std, get_natural_frequency],
-#     'Spectral Entropy': [numpy.std, get_natural_frequency],
-#     'Spectral Flux': [numpy.std, get_natural_frequency],
-#     'Spectral Rolloff': [numpy.std, get_natural_frequency],
-#     'MFCC1': [numpy.std, get_natural_frequency],
-#     'MFCC2': [numpy.std, get_natural_frequency],
-#     'MFCC3': [numpy.std, get_natural_frequency],
-#     'MFCC4': [numpy.std, get_natural_frequency],
-#     'MFCC5': [numpy.std, get_natural_frequency],
-#     'MFCC6': [numpy.std, get_natural_frequency],
-#     'MFCC7': [numpy.std, get_natural_frequency],
-#     'MFCC8': [numpy.std, get_natural_frequency],
-#     'MFCC9': [numpy.std, get_natural_frequency],
-#     'MFCC10': [numpy.std, get_natural_frequency],
-#     'MFCC11': [numpy.std, get_natural_frequency],
-#     'MFCC12': [numpy.std, get_natural_frequency],
-#     'MFCC13': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 1': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 2': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 3': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 4': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 5': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 6': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 7': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 8': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 9': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 10': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 11': [numpy.std, get_natural_frequency],
-#     'Chroma Vector 12': [numpy.std, get_natural_frequency],
-#     'Chroma Deviation': [numpy.std, get_natural_frequency],
-# }
 
 emotions_dict = {
     1: "Neutral",
@@ -302,6 +118,8 @@ def apply_pca(data_frame, n_components):
     features = list(set(data_frame) - set(['Emotion']))
     data = data_frame.loc[:, features].values
     emotions = data_frame.loc[:, ['Emotion']].values
+
+    data = StandardScaler().fit_transform(data)
 
     pca = PCA(n_components=n_components).fit(data)
     accumulated_ratio = 0
@@ -403,6 +221,33 @@ def statistic_matrix_init():
     # 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
 
 
+def test_model(emotions, data):
+    emotions_train, emotions_test = emotions
+    data_train, data_test = data
+    X = numpy.array(data_train)
+    Y = numpy.array(emotions_train)
+    classifier = naive_bayes_init()
+    classifier.fit(X, Y)
+    statistics = {}
+    for i, emotion in enumerate(emotions_test.flatten()):
+        [predict] = classifier.predict([data_test[i]])
+        if emotion not in statistics:
+            statistics[emotion] = {predict: 0}
+        if predict not in statistics[emotion]:
+            statistics[emotion][predict] = 1
+        else:
+            statistics[emotion][predict] += 1
+
+    emotions, counts = numpy.unique(
+        emotions_test.flatten(), return_counts=True)
+    occourences = dict(zip(emotions, counts))
+    for emotion in statistics:
+        for predicted_emotion in statistics[emotion]:
+            statistics[emotion][predicted_emotion] = statistics[emotion][predicted_emotion] / \
+                float(occourences[emotion])
+    return statistics
+
+
 def statistic_data(emotion, predict, stat_matrix):
     stat_matrix[emotions_dictionary[emotion[0]]][
         emotions_dictionary[predict[0]]] += 1
@@ -411,7 +256,8 @@ def statistic_data(emotion, predict, stat_matrix):
 def get_train_test_array(splitted_array, iteration):
     array = copy.deepcopy(splitted_array)
     test_array = array[iteration]
-    del array[iteration]
+    if len(array) > 1:
+        del array[iteration]
     train_array = numpy.concatenate(array)
     return numpy.array(train_array), numpy.array(test_array)
 
@@ -517,29 +363,13 @@ def open_actor_features_maximums(actor_number):
     return open_phrase_features
 
 
-def create_category(deviation, maximus):
-    return int(maximus / deviation * 2)
+def create_category(deviation, feature_value):
+    return int(feature_value / (deviation * 2))
 
 
-def get_categories(deviation):
-    dataframes = []
-    emotions = []
-    emotion = 1
-    data = []
-
-    for i in range(1, 9):
-        dataframes.append(pd.read_csv(
-            "Maximums/Emotion_{:0>2}.csv".format(i), names=feature_labels))
-    for dataframe in dataframes:
-        for data_row in dataframe.values:
-            # if(emotions_dict[emotion] == "Happy" or emotions_dict[emotion] == "Angry"):
-                # if(emotions_dict[emotion] == "Happy" or
-                # emotions_dict[emotion] == "Sad" or emotions_dict[emotion] ==
-                # "Angry" or emotions_dict[emotion] == "Fearful"):
-            data.append(map(curry(create_category, deviation), data_row))
-            emotions.append(emotions_dict[emotion])
-        emotion += 1
-    return emotions, data
+def categorize_data(deviation, feature_array):
+    return [create_category(deviation, value)
+            for value in feature_array]
 
 
 def getFFTMaximums(fftData, output):
@@ -649,7 +479,7 @@ def get_features_data_frames(domain, **kwargs):
     )
 
 
-def unify_data_frames(data_frames, reducers):
+def unify_data_frames(data_frames, reducers, emotions_dict=emotions_dict):
     unified_data_frame = pd.DataFrame()
 
     for actor in data_frames:
