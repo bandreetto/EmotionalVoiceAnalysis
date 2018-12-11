@@ -80,9 +80,10 @@ while categories_deviation < .5:
     y_sad.append(mean_statistics['Sad']['Sad'])
     categories_deviation += .01
 
-plt.plot(x, y_angry, 'r')
-plt.plot(x, y_fearful, 'g')
-plt.plot(x, y_happy, 'y')
-plt.plot(x, y_sad, 'b')
-plt.title('Explained Variance: {}'.format(explained_variance))
+plt.plot(x, y_angry, 'r', label="Raiva")
+plt.plot(x, y_fearful, 'g', label="Medo")
+plt.plot(x, y_happy, 'y', label="Felicidade")
+plt.plot(x, y_sad, 'b', label="Trizteza")
+plt.legend(loc='best')
+plt.title('Desvio padrao')
 plt.show()
