@@ -250,24 +250,28 @@ def test_model(emotions, data):
     Y = numpy.array(emotions_train)
     classifier = naive_bayes_init()
     classifier.fit(X, Y)
-    statistics = {}
+    absolute_statistics = {}
+    relative_statistics = {}
     for i, emotion in enumerate(emotions_test.flatten()):
         [predict] = classifier.predict([data_test[i]])
-        if emotion not in statistics:
-            statistics[emotion] = {predict: 0}
-        if predict not in statistics[emotion]:
-            statistics[emotion][predict] = 1
+        if emotion not in absolute_statistics:
+            absolute_statistics[emotion] = {predict: 0}
+            relative_statistics[emotion] = {predict: 0}
+        if predict not in absolute_statistics[emotion]:
+            absolute_statistics[emotion][predict] = 1
+            relative_statistics[emotion][predict] = 1
         else:
-            statistics[emotion][predict] += 1
+            absolute_statistics[emotion][predict] += 1
+            relative_statistics[emotion][predict] += 1
 
     emotions, counts = numpy.unique(
         emotions_test.flatten(), return_counts=True)
     occourences = dict(zip(emotions, counts))
-    for emotion in statistics:
-        for predicted_emotion in statistics[emotion]:
-            statistics[emotion][predicted_emotion] = statistics[emotion][predicted_emotion] / \
+    for emotion in absolute_statistics:
+        for predicted_emotion in absolute_statistics[emotion]:
+            relative_statistics[emotion][predicted_emotion] = absolute_statistics[emotion][predicted_emotion] / \
                 float(occourences[emotion])
-    return statistics
+    return absolute_statistics, relative_statistics
 
 
 def statistic_data(emotion, predict, stat_matrix):
@@ -352,7 +356,7 @@ def unwind_features(root, *args):
 def open_actor_features(actor_number):
     def open_phrase_features(phrase_number):
         def open_emotion_features(emotion_number):
-            path = './data_old/Actor_{0:0>2}/Frase_{1}/Actor_{0:0>2}_0{2}_st.csv'.format(
+            path = './data/Actor_{0:0>2}/Frase_{1}/Emotion_0{2}_st.csv'.format(
                 actor_number, phrase_number, emotion_number)
             return pd.read_csv(path, names=feature_labels)
         return open_emotion_features
@@ -480,7 +484,7 @@ def get_covered_data_percentile(data_array, deviation):
 
 def get_features_data_frames(domain, **kwargs):
     actors_range = kwargs.get('actor_numbers') or range(1, 25)
-    phrases_range = kwargs.get('phrase_numbers') or range(1, 3)
+    phrases_range = kwargs.get('phrase_numbers') or range(1, 5)
     emotions_range = kwargs.get('emotion_numbers') or range(1, 9)
     dimension = kwargs.get('dimension')
 
