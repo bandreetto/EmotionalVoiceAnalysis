@@ -9,6 +9,8 @@ from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from utils import *
 from tabulate import tabulate
+from pyAudioAnalysis import audioBasicIO
+import base64
 
 n_testing_slices = 5
 categories_deviation = 0.001
